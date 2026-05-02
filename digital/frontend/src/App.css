@@ -1,0 +1,4 @@
+/* App.css is now managed via index.css and Tailwind utility classes */
+.app-main {
+  min-height: 100vh;
+}
