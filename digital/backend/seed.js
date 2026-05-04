@@ -1,10 +1,12 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const User = require('./model/digitalmodel');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import User from './model/userModel.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 async function seed() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/DigitalPayment');
+        await mongoose.connect(process.env.MONGODB_URI);
         console.log('Connected to database...');
 
         const adminEmail = 'admin@fraudguard.com';

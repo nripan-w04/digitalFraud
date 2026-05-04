@@ -17,7 +17,7 @@ const Login = () => {
             const { data } = await api.post('/digital/login', formData);
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
-            toast.success('Login successful!');
+
 
             if (data.user.role === 'Admin') {
                 navigate('/admin');
@@ -41,7 +41,7 @@ const Login = () => {
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
-                className=" w-full border border-4 border-white/20  max-w-[450px] p-10 md:p-16 rounded-md relative z-10  shadow-2xl"
+                className=" w-full border border-4 border-white/20  max-w-[550px] p-10 md:p-16 rounded-xl relative z-10  shadow-2xl"
             >
                 <motion.div 
                     initial={{ opacity: 0, y: 10 }}
@@ -52,8 +52,8 @@ const Login = () => {
                     <div className="inline-flex p-5 bg-accent/10 rounded-xl mb-8 border border-accent/20">
                         <LogIn className="text-accent" size={32} />
                     </div>
-                    <h2 className="text-4xl font-display font-black mb-3 tracking-tighter uppercase">Sign In</h2>
-                    <p className="text-white/80 text-[10px] font-black uppercase tracking-[0.4em]">Welcome back to FraudGuard</p>
+                    <h2 className="text-4xl font-display font-medium mb-3 tracking-tighter uppercase">Sign In</h2>
+                    <p className="text-white/60 text-xs font-bold uppercase tracking-[0.2em]">Security Protocol Authorization</p>
                 </motion.div>
 
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -63,8 +63,8 @@ const Login = () => {
                         transition={{ delay: 0.3 }}
                         className="space-y-3"
                     >
-                        <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80 flex items-center gap-2">
-                            <Mail size={12} /> Email Address
+                        <label className="text-xs font-bold uppercase tracking-[0.2em] text-white/40 flex items-center gap-2">
+                            <Mail size={14} className="text-accent/60" /> Email Address
                         </label>
                         <input
                             type="email"
@@ -81,8 +81,8 @@ const Login = () => {
                         transition={{ delay: 0.4 }}
                         className="space-y-3"
                     >
-                        <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80 flex items-center gap-2">
-                            <Lock size={12} /> Password
+                        <label className="text-xs font-bold uppercase tracking-[0.2em] text-white/40 flex items-center gap-2">
+                            <Lock size={14} className="text-accent/60" /> Password
                         </label>
                         <input
                             type="password"
@@ -99,7 +99,6 @@ const Login = () => {
                         transition={{ delay: 0.5 }}
                         className="flex justify-end"
                     >
-                        <Link to="#" className="text-[9px] font-black text-accent uppercase tracking-[0.3em] hover:underline">Forgot Password?</Link>
                     </motion.div>
 
                     <motion.button
@@ -124,7 +123,7 @@ const Login = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.7 }}
-                    className="mt-12 text-center text-[9px] font-black uppercase tracking-[0.4em] text-white/20"
+                    className="mt-12 text-center text-xs font-bold uppercase tracking-[0.2em] text-white/20"
                 >
                     Don't have an account?
                     <Link to="/register" className="text-accent hover:text-white transition-colors ml-2">Create Account</Link>

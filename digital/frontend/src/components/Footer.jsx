@@ -34,7 +34,7 @@ const Footer = () => {
                             <div className="p-2.5 bg-accent/10 rounded-xl">
                                 <Shield className="text-accent w-6 h-6" />
                             </div>
-                            <span className="text-xl font-display font-black tracking-tighter uppercase">
+                            <span className="text-xl font-display font-bold tracking-tighter uppercase">
                                 FRAUD<span className="text-accent">GUARD</span>
                             </span>
                         </Link>
@@ -49,7 +49,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="text-white font-display font-black text-[10px] uppercase tracking-[0.4em] mb-12">Architecture</h4>
+                        <h4 className="text-white font-display font-bold text-xs uppercase tracking-[0.2em] mb-12">Architecture</h4>
                         <ul className="space-y-5">
                             <FooterLink label="Neural Core" />
                             <FooterLink label="Edge Protection" />
@@ -59,7 +59,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="text-white font-display font-black text-[10px] uppercase tracking-[0.4em] mb-12">Company</h4>
+                        <h4 className="text-white font-display font-bold text-xs uppercase tracking-[0.2em] mb-12">Company</h4>
                         <ul className="space-y-5">
                             <FooterLink label="Security Ops" />
                             <FooterLink label="Intelligence" />
@@ -69,13 +69,13 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="text-white font-display font-black text-[10px] uppercase tracking-[0.4em] mb-12">Connectivity</h4>
-                        <p className="text-[10px] text-white/40 mb-6 font-bold uppercase tracking-[0.2em]">Join the network</p>
+                        <h4 className="text-white font-display font-bold text-xs uppercase tracking-[0.2em] mb-12">Connectivity</h4>
+                        <p className="text-xs text-white/40 mb-6 font-bold uppercase tracking-[0.2em]">Join the network</p>
                         <div className="flex gap-2">
                             <input 
                                 type="email" 
                                 placeholder="ACCESS_NODE@ENTERPRISE.IO" 
-                                className="bg-white/5 border border-white/5 rounded-full px-6 py-4 text-[10px] w-full outline-none focus:border-accent/50 transition-all font-bold placeholder:opacity-30" 
+                                className="bg-white/5 border border-white/5 rounded-full px-6 py-4 text-xs w-full outline-none focus:border-accent/50 transition-all font-bold placeholder:opacity-30" 
                             />
                             <button className="bg-accent p-4 rounded-full hover:bg-sky-400 transition-all text-black">
                                 <Mail size={16} />
@@ -84,7 +84,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-[9px] text-white/20 font-black uppercase tracking-[0.4em]">
+                <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-xs text-white/20 font-bold uppercase tracking-[0.2em]">
                     <p>© 2026 FRAUDGUARD SYSTEMS. [V4.2.0-STABLE]</p>
                     <div className="flex gap-10 items-center">
                         <span className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer"><Globe size={14} /> GLOBAL_EN_US</span>
@@ -102,7 +102,7 @@ const Footer = () => {
 
 const FooterLink = ({ label }) => (
     <li>
-        <Link to="#" className="text-[9px] font-black text-white/40 hover:text-accent transition-all uppercase tracking-[0.3em]">
+        <Link to="#" className="text-xs font-bold text-white/40 hover:text-white transition-all uppercase tracking-[0.2em]">
             {label}
         </Link>
     </li>

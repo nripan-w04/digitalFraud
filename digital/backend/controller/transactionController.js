@@ -3,112 +3,95 @@ import Wallet from "../model/walletModel.js";
 import User from "../model/userModel.js";
 import axios from "axios";
 
-export const initiateTransaction = async (req, res, next) => {
-    try {
-        const { receiverEmail, amount } = req.body;
-        const senderId = req.user.id;
-
-        if (!receiverEmail || !amount || amount <= 0) {
-            return res.status(400).json({ message: "Invalid transaction details" });
-        }
-
-        // 1. Get Sender Wallet
-        const senderWallet = await Wallet.findOne({ userId: senderId });
-        if (!senderWallet) {
-            return res.status(404).json({ message: "Sender wallet not found" });
-        }
-
-        if (senderWallet.balance < amount) {
-            return res.status(400).json({ message: "Insufficient balance" });
-        }
-
-        // 2. Get Receiver
-        const receiver = await User.findOne({ email: receiverEmail });
-        if (!receiver) {
-            return res.status(404).json({ message: "Receiver not found" });
-        }
-        if (receiver._id.toString() === senderId) {
-            return res.status(400).json({ message: "Cannot send money to yourself" });
-        }
-
-        const receiverWallet = await Wallet.findOne({ userId: receiver._id });
-        if (!receiverWallet) {
-            return res.status(404).json({ message: "Receiver wallet not found" });
-        }
-
-        // 3. AI Fraud Check Hook
-        let riskScore = 0;
-        let isFraud = false;
-
-        try {
-            // Attempt to call the Python AI Microservice
-            // NOTE: Replace with actual AI service URL later
-            const aiResponse = await axios.post("http://localhost:8000/predict", {
-                senderId,
-                receiverId: receiver._id,
-                amount,
-                timestamp: new Date().toISOString()
-            });
-            riskScore = aiResponse.data.riskScore;
-        } catch (error) {
-            console.warn("Python AI Microservice unreachable. Falling back to simulated score.");
-            // Simulated fallback: 20% chance of being high risk
-            riskScore = Math.random() > 0.8 ? Math.floor(Math.random() * (100 - 75 + 1) + 75) : Math.floor(Math.random() * 40);
-        }
-
-        if (riskScore > 75) {
-            isFraud = true;
-        }
-
-        // 4. Create Transaction Record
-        const transaction = new Transaction({
-            userId: senderId,
-            walletId: senderWallet._id,
-            amount: -amount, // Negative for sender
-            type: "Withdrawal",
-            status: isFraud ? "Suspicious" : "Completed",
-            riskScore: riskScore,
-            description: `Transfer to ${receiverEmail}`
-        });
-
-        await transaction.save();
-
-        const receiverTransaction = new Transaction({
-            userId: receiver._id,
-            walletId: receiverWallet._id,
-            amount: amount,
-            type: "Deposit",
-            status: isFraud ? "Suspicious" : "Completed",
-            riskScore: riskScore,
-            description: `Transfer from ${req.user.email || 'Sender'}`
-        });
-
-        await receiverTransaction.save();
-
-        // 5. Update Wallets if not fraud
-        if (!isFraud) {
-            senderWallet.balance -= amount;
-            await senderWallet.save();
-
-            receiverWallet.balance += Number(amount);
-            await receiverWallet.save();
-        }
-
-        res.status(201).json({
-            message: isFraud ? "Transaction flagged for review" : "Transaction successful",
-            transaction,
-            riskScore
-        });
-
-    } catch (error) {
-        next(error); // Passes error to Centralized Error Handler
-    }
-};
-
 export const getUserTransactions = async (req, res, next) => {
     try {
         const transactions = await Transaction.find({ userId: req.user.id }).sort({ createdAt: -1 });
         res.status(200).json(transactions);
+    } catch (error) {
+        next(error);
+    }
+};
+export const initiateTransaction = async (req, res, next) => {
+    try {
+        const { recipientEmail, amount, description, location, deviceId } = req.body;
+        const senderId = req.user.id;
+
+        // 1. Validate Geolocation
+        if (!location || !location.lat || !location.lon) {
+            return res.status(403).json({ 
+                message: "GEOLOCATION_REQUIRED: Transaction aborted. Hardware origin telemetry is missing." 
+            });
+        }
+
+        // 2. Validate Amount
+        if (!amount || amount <= 0) {
+            return res.status(400).json({ message: "Invalid amount specified." });
+        }
+
+        // 3. Get Sender & Receiver
+        const sender = await User.findById(senderId);
+        const receiver = await User.findOne({ email: recipientEmail });
+
+        if (!receiver) {
+            return res.status(404).json({ message: "Recipient handle not found in the global ledger." });
+        }
+
+        if (sender._id.equals(receiver._id)) {
+            return res.status(400).json({ message: "Intra-node loopback transfers are not permitted via this terminal." });
+        }
+
+        // 4. Check Sender Balance (Liquidity Verification)
+        const senderWallet = await Wallet.findOne({ userId: senderId });
+        const numericAmount = Number(amount);
+
+        if (!senderWallet || senderWallet.balance < numericAmount) {
+            return res.status(402).json({ 
+                message: "INSUFFICIENT_LIQUIDITY: Your vault balance is below the required threshold for this transmission." 
+            });
+        }
+
+        const receiverWallet = await Wallet.findOne({ userId: receiver._id });
+
+        // 5. Execute Transfer
+        senderWallet.balance -= Number(amount);
+        receiverWallet.balance += Number(amount);
+
+        await senderWallet.save();
+        await receiverWallet.save();
+
+        // 6. Record Transactions
+        const senderTx = new Transaction({
+            userId: sender._id,
+            walletId: senderWallet._id,
+            beneficiaryId: receiver._id,
+            amount: -Number(amount),
+            type: "Transfer",
+            status: "Completed",
+            location,
+            deviceId,
+            description: description || `Transfer to ${recipientEmail}`
+        });
+
+        const receiverTx = new Transaction({
+            userId: receiver._id,
+            walletId: receiverWallet._id,
+            beneficiaryId: sender._id,
+            amount: Number(amount),
+            type: "Transfer",
+            status: "Completed",
+            location,
+            deviceId,
+            description: `Received from ${sender.email}`
+        });
+
+        await senderTx.save();
+        await receiverTx.save();
+
+        res.status(201).json({ 
+            message: "Neural transfer finalized successfully.", 
+            transaction: senderTx 
+        });
+
     } catch (error) {
         next(error);
     }

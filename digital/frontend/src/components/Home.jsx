@@ -103,7 +103,7 @@ const Home = () => {
                                 transition={{ duration: 1, delay: 0.3 }}
                                 className="max-w-5xl"
                             >
-                                <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-[10px] font-black uppercase tracking-[0.4em] mb-10">
+                                <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-bold uppercase tracking-[0.2em] mb-10">
                                     <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
                                     PROTOCOL_ACTIVATION: v4.2.0
                                 </div>
@@ -113,7 +113,7 @@ const Home = () => {
                                         {slides[currentSlide].title.split(' ').slice(-2).join(' ')}
                                     </span>
                                 </h1>
-                                <p className="text-[11px] font-black uppercase tracking-[0.5em] text-white/40 mb-16 leading-loose max-w-3xl mx-auto">
+                                <p className="text-sm font-bold uppercase tracking-[0.2em] text-white/70 mb-16 leading-loose max-w-3xl mx-auto">
                                     {slides[currentSlide].subtitle}
                                 </p>
                                 <div className="flex p-10 flex-col sm:flex-row gap-8 justify-center">
@@ -148,11 +148,11 @@ const Home = () => {
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-accent/5 blur-[150px] rounded-full pointer-events-none" />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-32 items-center mb-32 relative z-10">
                     <div>
-                        <div className="text-accent text-[10px] font-black uppercase tracking-[0.5em] mb-8">System_Capabilities</div>
-                        <h2 className="text-6xl md:text-8xl font-display font-black mb-10 leading-[0.95] uppercase tracking-tighter">
-                            Engineered for <br /><span className="text-white/20">Zero Trust</span>
+                        <div className="text-accent text-xs font-bold uppercase tracking-[0.4em] mb-8">System_Capabilities</div>
+                        <h2 className="text-6xl md:text-8xl font-display font-medium mb-10 leading-[0.95] uppercase tracking-tighter text-white">
+                            Engineered for <br /><span className="text-white/50">Zero Trust</span>
                         </h2>
-                        <p className="text-white/40 text-lg mb-14 leading-relaxed font-medium max-w-xl">
+                        <p className="text-white/70 text-lg mb-14 leading-relaxed font-bold max-w-xl">
                             We don't just detect fraud; we predict and neutralize it. Our distributed intelligence network maps global risk patterns in real-time.
                         </p>
                         <div className="flex flex-col gap-8">
@@ -176,8 +176,8 @@ const Home = () => {
                             <div className="glass-panel p-14 rounded-[4rem] border-accent/20 bg-accent/5 relative overflow-hidden group">
                                 <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                                 <div className="relative z-10">
-                                    <div className="text-6xl md:text-8xl font-display font-black text-accent mb-4 tracking-tighter uppercase">99.99%</div>
-                                    <div className="text-[10px] font-black uppercase tracking-[0.5em] text-white/30">Network Efficiency Rate</div>
+                                    <div className="text-6xl md:text-8xl font-display font-medium text-accent mb-4 tracking-tighter uppercase">99.99%</div>
+                                    <div className="text-xs font-bold uppercase tracking-[0.4em] text-white/60">Network Efficiency Rate</div>
                                 </div>
                             </div>
                         </div>
@@ -222,14 +222,14 @@ const Home = () => {
                         <h2 className="text-6xl md:text-[9rem] font-['Syncopate'] font-bold mb-12 tracking-[-0.05em] uppercase leading-[0.8] text-white">
                             Total <span className="text-accent">Network</span> <br />
                             <motion.span
-                                animate={{ opacity: [0.5, 1, 0.5] }}
+                                animate={{ opacity: [0.6, 1, 0.6] }}
                                 transition={{ duration: 2, repeat: Infinity }}
-                                className="text-white/20"
+                                className="text-white/40"
                             >
                                 Immune
                             </motion.span> System
                         </h2>
-                        <p className="text-sm md:text-base text-white/40 max-w-2xl mx-auto font-black uppercase tracking-[0.5em] leading-loose">
+                        <p className="text-base text-white/70 max-w-2xl mx-auto font-black uppercase tracking-[0.2em] leading-loose">
                             Our autonomous security layer reacts to threats in sub-millisecond cycles, ensuring your digital infrastructure remains impenetrable.
                         </p>
 
@@ -237,15 +237,15 @@ const Home = () => {
                         <div className="mt-20 flex justify-center gap-20">
                             <div className="flex flex-col items-center gap-4">
                                 <div className="w-12 h-[1px] bg-accent/30" />
-                                <span className="text-[9px] font-black text-accent uppercase tracking-widest">Latency_0.02ms</span>
+                                <span className="text-xs font-bold text-accent/80 uppercase tracking-widest">Latency_0.02ms</span>
                             </div>
                             <div className="flex flex-col items-center gap-4">
                                 <div className="w-12 h-[1px] bg-accent/30" />
-                                <span className="text-[9px] font-black text-accent uppercase tracking-widest">Protection_Global</span>
+                                <span className="text-xs font-bold text-accent/80 uppercase tracking-widest">Protection_Global</span>
                             </div>
                             <div className="flex flex-col items-center gap-4">
                                 <div className="w-12 h-[1px] bg-accent/30" />
-                                <span className="text-[9px] font-black text-accent uppercase tracking-widest">Protocol_Secure</span>
+                                <span className="text-xs font-bold text-accent/80 uppercase tracking-widest">Protocol_Secure</span>
                             </div>
                         </div>
                     </motion.div>
@@ -267,7 +267,7 @@ const FeatureItem = ({ icon, title, text }) => (
         </div>
         <div>
             <div className="text-sm font-bold uppercase tracking-widest text-white mb-1">{title}</div>
-            <p className="text-xs text-muted-foreground leading-relaxed">{text}</p>
+            <p className="text-xs text-white/60 font-bold leading-relaxed">{text}</p>
         </div>
     </div>
 );
@@ -281,7 +281,7 @@ const FeatureCard = ({ icon, title, desc }) => (
             {icon}
         </div>
         <h3 className="text-lg font-display font-bold mb-3 tracking-tight">{title}</h3>
-        <p className="text-xs text-muted-foreground leading-relaxed font-medium opacity-70">{desc}</p>
+        <p className="text-xs text-white/70 leading-relaxed font-black">{desc}</p>
     </motion.div>
 );
 

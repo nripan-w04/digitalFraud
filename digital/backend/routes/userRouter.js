@@ -1,12 +1,15 @@
 import express from 'express';
-import { register, login, seedAdmin, getUserProfile } from '../controller/userController.js';
+import { register, login, seedAdmin, getUserProfile, updateUserProfile } from '../controller/userController.js';
+import { verifyToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
 router.get("/seed-admin", seedAdmin);
-router.get("/profile", getUserProfile);
 
+// Protected routes
+router.get("/profile", verifyToken, getUserProfile);
+router.put("/profile", verifyToken, updateUserProfile);
 
 export default router;

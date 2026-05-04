@@ -10,11 +10,13 @@ const userSchema = new mongoose.Schema({
         enum: ["Pending", "Verified", "Rejected"],
         default: "Pending"
     },
-    role: { 
-        type: String, 
-        enum: ["Admin", "Analyst", "Viewer", "User"], 
-        default: "Viewer" 
+    role: {
+        type: String,
+        enum: ["Admin", "Analyst", "Viewer", "User"],
+        default: "Viewer"
     },
+    isApproved: { type: Boolean, default: true },
+    isBlocked: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });
 

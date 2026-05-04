@@ -21,7 +21,6 @@ const Register = () => {
         setLoading(true);
         try {
             await api.post('/digital/register', formData);
-            toast.success('Registration successful! Please login.');
             navigate('/login');
         } catch (err) {
             toast.error(err.response?.data?.message || 'Registration failed');
@@ -50,8 +49,8 @@ const Register = () => {
                     <div className="inline-flex p-5 bg-accent/10 rounded-xl mb-8 border border-accent/20">
                         <Shield className="text-accent" size={32} />
                     </div>
-                    <h2 className="text-4xl font-display font-black mb-3 tracking-tighter uppercase">Create Account</h2>
-                    <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.4em]">Join the FraudGuard network</p>
+                    <h2 className="text-4xl font-display font-medium mb-3 tracking-tighter uppercase">Create Account</h2>
+                    <p className="text-white/40 text-xs font-bold uppercase tracking-[0.2em]">Join the FraudGuard network</p>
                 </motion.div>
 
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -62,8 +61,8 @@ const Register = () => {
                             transition={{ delay: 0.3 }}
                             className="space-y-3"
                         >
-                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80  flex items-center gap-2">
-                                <User size={12} /> Full Name
+                            <label className="text-xs font-bold uppercase tracking-[0.2em] text-white/60  flex items-center gap-2">
+                                <User size={14} className="text-accent/60" /> Full Name
                             </label>
                             <input
                                 type="text"
@@ -80,8 +79,8 @@ const Register = () => {
                             transition={{ delay: 0.4 }}
                             className="space-y-3"
                         >
-                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80  flex items-center gap-2">
-                                <Mail size={12} /> Email Address
+                            <label className="text-xs font-bold uppercase tracking-[0.2em] text-white/60  flex items-center gap-2">
+                                <Mail size={14} className="text-accent/60" /> Email Address
                             </label>
                             <input
                                 type="email"
@@ -100,8 +99,8 @@ const Register = () => {
                             transition={{ delay: 0.5 }}
                             className="space-y-3"
                         >
-                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80 flex items-center gap-2">
-                                <Phone size={12} /> Phone Number
+                            <label className="text-xs font-bold uppercase tracking-[0.2em] text-white/60 flex items-center gap-2">
+                                <Phone size={14} className="text-accent/60" /> Phone Number
                             </label>
                             <input
                                 type="tel"
@@ -118,8 +117,8 @@ const Register = () => {
                             transition={{ delay: 0.6 }}
                             className="space-y-3"
                         >
-                            <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80  flex items-center gap-2">
-                                <Briefcase size={12} /> Account Type
+                            <label className="text-xs font-bold uppercase tracking-[0.2em] text-white/60  flex items-center gap-2">
+                                <Briefcase size={14} className="text-accent/60" /> Account Type
                             </label>
                             <select
                                 className="input-field appearance-none cursor-pointer !rounded-md"
@@ -127,7 +126,6 @@ const Register = () => {
                                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                             >
                                 <option value="Viewer" className="bg-card">Viewer</option>
-                                <option value="User" className="bg-card">Business User</option>
                                 <option value="Analyst" className="bg-card">Security Analyst</option>
                             </select>
                         </motion.div>
@@ -139,8 +137,8 @@ const Register = () => {
                         transition={{ delay: 0.7 }}
                         className="space-y-3"
                     >
-                        <label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80   flex items-center gap-2">
-                            <Lock size={12} /> Password
+                        <label className="text-xs font-bold uppercase tracking-[0.2em] text-white/60   flex items-center gap-2">
+                            <Lock size={14} className="text-accent/60" /> Password
                         </label>
                         <input
                             type="password"
@@ -173,7 +171,7 @@ const Register = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.9 }}
-                    className="mt-12 text-center text-[9px] font-black uppercase tracking-[0.4em] text-white/20"
+                    className="mt-12 text-center text-xs font-bold uppercase tracking-[0.2em] text-white/20"
                 >
                     Already have an account?
                     <Link to="/login" className="text-accent hover:text-white transition-colors ml-2">Sign In</Link>

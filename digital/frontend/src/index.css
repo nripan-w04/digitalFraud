@@ -5,42 +5,65 @@
 
 /* ─── Theme ───────────────────────────────────── */
 @theme {
-  --color-background: #000000; /* Pure Black */
+  --color-background: #000000;
+  /* Pure Black */
   --color-foreground: #f8fafc;
-  
+
   --color-card: #0a0a0a;
   --color-muted: #111111;
   --color-muted-foreground: #94a3b8;
-  
-  --color-accent: #0ea5e9; /* Sky Blue */
+
+  --color-accent: #0ea5e9;
+  /* Sky Blue */
   --color-accent-secondary: #38bdf8;
   --color-accent-tertiary: #7dd3fc;
-  
+
   --color-border: #111111;
   --color-input: #0a0a0a;
   --color-ring: #0ea5e9;
-  
+
   --font-sans: "Inter", sans-serif;
   --font-display: "Space Grotesk", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
-  
+
   --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-slow: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-shimmer: shimmer 2s linear infinite;
 
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
   }
-  
+
   @keyframes pulse-slow {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.05); }
+
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
   }
 
   @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
   }
 }
 
@@ -50,8 +73,13 @@
     @apply bg-background text-foreground font-sans antialiased selection:bg-accent/30 overflow-x-hidden;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight font-bold uppercase;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display tracking-tight font-medium uppercase;
   }
 
   /* Standard Page Margins */
@@ -76,7 +104,7 @@
 
   .bg-mesh {
     background-color: #000000;
-    background-image: 
+    background-image:
       radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.15) 0px, transparent 50%),
       radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
       radial-gradient(at 100% 100%, rgba(125, 211, 252, 0.15) 0px, transparent 50%);
@@ -95,19 +123,27 @@
   }
 
   @keyframes border-beam {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
   }
 }
 
 /* ─── Components ─────────────────────────────── */
 @layer components {
-  .btn-primary, .btn-sky, .btn-gold {
-    @apply relative px-8 py-3 bg-accent text-black font-bold rounded-full overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] flex items-center justify-center gap-2 uppercase tracking-widest text-xs;
-  }
+
+  .btn-primary,
+  .btn-sky,
+  /* .btn-gold {
+    @apply relative px-8 py-3 bg-accent text-black font-medium rounded-full overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-[0_0_30px_rgba(14, 165, 233, 0.5)] flex items-center justify-center gap-2 uppercase tracking-widest text-xs;
+  } */
 
   .btn-secondary {
-    @apply relative px-8 py-3 bg-white/5 text-white font-bold rounded-full border border-white/10 overflow-hidden transition-all duration-300 hover:bg-white/10 active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest text-xs;
+    @apply relative px-8 py-3 bg-white/5 text-white font-medium rounded-full border border-white/10 overflow-hidden transition-all duration-300 hover:bg-white/10 active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest text-xs;
   }
 
   .input-field {

@@ -1,0 +1,65 @@
+# FRAUDGUARD_ML_INTEGRATION_PROTOCOL
+# Data Exchange Schema v1.2.0
+
+This document outlines the mandatory and optional fields required by the separate ML scoring service to calculate transaction risk scores.
+
+## 1. TRANSACTIONAL_PAYLOAD (Request to ML Model)
+These fields should be sent from the backend to the ML inference engine.
+
+| Field Name | Data Type | Description | Example Value |
+| :--- | :--- | :--- | :--- |
+| `transaction_id` | String (UUID) | Unique identifier for the trace. | "tx_99281_af" |
+| `user_id` | String (ID) | The identity of the initiator. | "user_442" |
+| `amount` | Float | The magnitude of the asset transfer. | 14500.50 |
+| `currency` | String | ISO 4217 code. | "USD" |
+| `transaction_type` | Enum | [UPI, WALLET_TRANSFER, BANK_SWIFT, CARD_NP] | "UPI" |
+| `timestamp` | ISO8601 | Exact time of initiation. | "2026-05-04T10:30:00Z" |
+| `sender_ip` | String | IPv4/v6 address of the device. | "192.168.1.45" |
+| `device_fingerprint` | String | Unique hash of hardware/browser metrics. | "df_77a1_9b22" |
+| `geo_location` | Object | Coordinates of the origin. | `{"lat": 40.71, "lon": -74.00}` |
+| `beneficiary_id` | String | Recipient identity node. | "ben_8829" |
+| `avg_amount_30d` | Float | Historical average magnitude (Last 30 days). | 250.00 |
+| `tx_count_24h` | Integer | Transaction velocity in last 24 hours. | 14 |
+| `is_new_device` | Boolean | True if fingerprint hasn't been seen before. | true |
+| `time_since_last_tx` | Integer | Seconds since previous transaction. | 120 |
+
+## 2. ML_RESPONSE_SCHEMA (Response from ML Model)
+The expected feedback from the inference engine.
+
+| Field Name | Data Type | Description | Example Value |
+| :--- | :--- | :--- | :--- |
+| `risk_score` | Integer (0-100) | Calculated probability of fraud. | 82 |
+| `is_flagged` | Boolean | Hard flag based on threshold. | true |
+| `classification` | Enum | [LOW_RISK, MEDIUM_SUSPICION, HIGH_THREAT] | "HIGH_THREAT" |
+| `reasoning_code` | Array | Codes explaining the score. | ["VELOCITY_EXCEEDED", "NEW_DEVICE"] |
+| `explanation` | String | Human-readable breakdown. | "Unusually high amount from a new device in a different city." |
+| `recommended_action` | Enum | [ALLOW, CHALLENGE_OTP, BLOCK, HOLD] | "CHALLENGE_OTP" |
+
+## 3. REAL-TIME_TELEMETRY (Socket.IO Alert)
+Data broadcasted to Analysts when `is_flagged` is true.
+
+| Field Name | Data Type | Description | Example Value |
+| :--- | :--- | :--- | :--- |
+| `alert_id` | String | Unique alert trace ID. | "alt_441" |
+| `priority` | Enum | [CRITICAL, WARNING, INFO] | "CRITICAL" |
+| `payload` | Object | Full transaction object. | { ... } |
+| `threat_pattern` | String | Identified pattern name. | "Smurfing Attack" |
+
+---
+# IMPLEMENTATION_STATUS_REPORT
+
+## [DONE]
+- Live transaction monitoring dashboard (Analyst)
+- View transactions with search & pagination (Analyst/Admin)
+- Basic role management (Admin)
+- User Profile updates (User/Analyst)
+- High-performance UI with "Neural" aesthetics
+
+## [IN_PROGRESS / PLANNED]
+1. **Real-time Alerts**: Integrating Socket.IO into the backend `transactionController` to emit events to the `AnalystDashboard`.
+2. **Risk-based Blocking**: Logic in `transactionController` to compare ML score against Admin-defined `FRAUD_THRESHOLD`.
+3. **Dispute System**: New `Dispute` model and `/disputes` routes for users to report fraud.
+4. **Adaptive Auth**: Middleware that triggers an OTP (via Twilio/Nodemailer) if `ML_RESPONSE.recommended_action === "CHALLENGE_OTP"`.
+5. **Spending Insights**: Aggregation queries in MongoDB to provide monthly spending charts.
+6. **Geo-Location Map**: Integration of `react-leaflet` or `google-maps-react` in the Analyst Dashboard.
+7. **Rule Engine**: A dynamic UI for Admins to set static rules (e.g., "Block all transactions > $50k").

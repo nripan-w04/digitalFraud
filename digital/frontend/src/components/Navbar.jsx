@@ -31,35 +31,37 @@ const Navbar = () => {
                     <div className="p-2.5 bg-accent/10 rounded-xl group-hover:scale-110 transition-transform duration-500">
                         <Shield className="text-accent w-6 h-6" />
                     </div>
-                    <span className="text-xl font-display font-black tracking-tighter text-white uppercase">
+                    <span className="text-xl font-display font-bold tracking-tighter text-white uppercase">
                         FRAUD<span className="text-accent">GUARD</span>
                     </span>
                 </Link>
 
                 <div className="hidden md:flex items-center gap-12">
-                    <NavLink to="/" active={location.pathname === '/'}>Platform</NavLink>
+                    {user && (
+                        <NavLink to={user.role === 'Admin' ? '/admin' : '/'} active={location.pathname.startsWith('/admin') || location.pathname === '/'}>Dashboard</NavLink>
+                    )}
+                    {!user && <NavLink to="/" active={location.pathname === '/'}>Platform</NavLink>}
                     <NavLink to="#features">Intelligence</NavLink>
                     <NavLink to="#">Global Network</NavLink>
-                    <NavLink to="#">Enterprise</NavLink>
                 </div>
 
                 <div className="hidden md:flex items-center gap-8">
                     {user ? (
                         <div className="flex items-center gap-6">
-                            <div className="flex items-center gap-3 px-5 py-2 bg-white/5 rounded-full border border-white/5">
-                                <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-accent">
+                            <Link to="/profile" className="flex items-center gap-3 px-5 py-2 bg-white/5 rounded-full border border-white/5 hover:border-accent/30 transition-all group/profile">
+                                <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-accent group-hover/profile:bg-accent group-hover/profile:text-black transition-all">
                                     <User size={14} />
                                 </div>
-                                <span className="text-[9px] font-black text-white uppercase tracking-[0.3em]">{user.username}</span>
-                            </div>
+                                <span className="text-xs font-bold text-white uppercase tracking-[0.2em]">{user.username}</span>
+                            </Link>
                             <button onClick={handleLogout} className="text-muted-foreground hover:text-white transition-colors">
                                 <LogOut size={18} />
                             </button>
                         </div>
                     ) : (
-                        <div className="flex items-center gap-6">
-                            <Link to="/login" className="text-[9px] font-black uppercase tracking-[0.3em] hover:text-accent transition-colors">SIGN_IN</Link>
-                            <Link to="/register" className="btn-sky !py-2.5 !px-6">Get Started</Link>
+                        <div className="flex items-center gap-8">
+                            <Link to="/login" className="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent transition-colors">SIGN_IN</Link>
+                            <Link to="/register" className="btn-sky !py-3 !px-8 text-xs font-bold uppercase tracking-widest">Get Started</Link>
                         </div>
                     )}
                 </div>
@@ -98,7 +100,7 @@ const Navbar = () => {
 };
 
 const NavLink = ({ to, children, active }) => (
-    <Link to={to} className={`text-[9px] font-black tracking-[0.4em] uppercase transition-all hover:text-accent relative group ${active ? 'text-accent' : 'text-white/40'
+    <Link to={to} className={`text-xs font-bold tracking-[0.2em] uppercase transition-all hover:text-accent relative group ${active ? 'text-accent' : 'text-white/40'
         }`}>
         {children}
         <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-500 group-hover:w-full ${active ? 'w-full' : ''}`} />
@@ -106,7 +108,7 @@ const NavLink = ({ to, children, active }) => (
 );
 
 const MobileLink = ({ to, children, onClick }) => (
-    <Link to={to} className="text-2xl font-display font-black text-white uppercase tracking-tighter" onClick={onClick}>
+    <Link to={to} className="text-2xl font-display font-medium text-white uppercase tracking-tighter" onClick={onClick}>
         {children}
     </Link>
 );

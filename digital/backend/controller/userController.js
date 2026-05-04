@@ -19,7 +19,8 @@ export const register = async (req, res) => {
             email,
             password: hashedPassword,
             phone,
-            role: role || "Viewer"
+            role: role || "Viewer",
+            isApproved: role === "Analyst" ? false : true
         });
 
         await newUser.save();
@@ -43,6 +44,10 @@ export const login = async (req, res) => {
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.isApproved) {
+            return res.status(403).json({ message: "Your account is pending administrative approval. Analysts must be verified by a system administrator." });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -72,13 +77,7 @@ export const login = async (req, res) => {
 
 export const getUserProfile = async (req, res) => {
     try {
-        // Assume req.user is set by auth middleware (to be implemented or passed from token)
-        // For now, let's extract user ID from headers or token for demonstration
-        const token = req.headers.authorization?.split(" ")[1];
-        if (!token) return res.status(401).json({ message: "Unauthorized" });
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.id).select("-password");
+        const user = await User.findById(req.user.id).select("-password");
         if (!user) return res.status(404).json({ message: "User not found" });
 
         const wallet = await Wallet.findOne({ userId: user._id });
@@ -126,5 +125,35 @@ export const seedAdmin = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: "Error seeding admin", error: error.message });
+    }
+};
+export const updateUserProfile = async (req, res) => {
+    try {
+        const { username, phone, password } = req.body;
+        const userId = req.user.id;
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (username) user.username = username;
+        if (phone) user.phone = phone;
+        if (password) {
+            user.password = await bcrypt.hash(password, 10);
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            message: "Profile updated successfully",
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                phone: user.phone
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating profile", error: error.message });
     }
 };

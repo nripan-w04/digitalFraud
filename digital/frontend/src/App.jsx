@@ -10,6 +10,7 @@ import AdminFraudAlerts from './pages/admin/AdminFraudAlerts';
 import UserManagement from './pages/admin/UserManagement';
 import AnalystDashboard from './pages/analyst/AnalystDashboard';
 import ViewerDashboard from './pages/viewer/ViewerDashboard';
+import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Toaster } from 'react-hot-toast';
@@ -22,7 +23,7 @@ function App() {
   return (
     <BrowserRouter>
       <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
-      {role !== 'Admin' && <Navbar user={user} />}
+      <Navbar user={user} />
       <main className="app-main">
         <Routes>
           {/* Public Routes */}
@@ -38,20 +39,26 @@ function App() {
               {/* Protected Routes based on Role */}
               {role === 'Admin' && (
                 <Route path="/admin/*" element={<AdminLayout />}>
-                    <Route index element={<AdminOverview />} />
-                    <Route path="users" element={<UserManagement />} />
-                    <Route path="transactions" element={<AdminTransactions />} />
-                    <Route path="alerts" element={<AdminFraudAlerts />} />
-                    <Route path="*" element={<Navigate to="/admin" replace />} />
+                  <Route index element={<AdminOverview />} />
+                  <Route path="users" element={<UserManagement />} />
+                  <Route path="transactions" element={<AdminTransactions />} />
+                  <Route path="alerts" element={<AdminFraudAlerts />} />
+                  <Route path="*" element={<Navigate to="/admin" replace />} />
                 </Route>
               )}
-              
+
               {role === 'Analyst' && (
-                <Route path="/" element={<AnalystDashboard />} />
+                <>
+                  <Route path="/" element={<AnalystDashboard />} />
+                  <Route path="/profile" element={<Profile />} />
+                </>
               )}
 
               {(role === 'Viewer' || role === 'User') && (
-                <Route path="/" element={<ViewerDashboard />} />
+                <>
+                  <Route path="/" element={<ViewerDashboard />} />
+                  <Route path="/profile" element={<Profile />} />
+                </>
               )}
 
               {/* Default fallback for other roles to Home if needed */}

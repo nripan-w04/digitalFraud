@@ -1,0 +1,30 @@
+# Forensic Terminal: Node Termination & Asset Recovery Protocol
+
+This document outlines the operational logic behind the `BLOCK_NODE` and `REVERT_ASSETS` functions within the Analyst Dashboard.
+
+## 1. Node Termination (BLOCK_NODE)
+The "Block Node" command is a high-level administrative action used to isolate a suspicious device or endpoint from the network.
+
+### Operational Workflow:
+1. **Blacklisting**: The Device ID associated with the transaction is immediately added to the `Blacklist` collection in the database.
+2. **Telemetry Lockdown**: All historical and current transactions originating from this specific Device ID are updated to a status of `Blocked`. This ensures that even if the page is refreshed, the forensic trail remains flagged.
+3. **Real-time Signal**: A WebSocket event (`node_terminated`) is broadcast to all active analyst terminals. This causes the UI to immediately "gray out" affected nodes in the stream without requiring a manual refresh.
+4. **Access Revocation**: Future requests from this Device ID will be intercepted and rejected at the API gateway layer.
+
+### Why it was "un-graying" before:
+Previously, the command only updated the blacklist but did not update the individual transaction records in the database. Consequently, when the dashboard automatically re-fetched data from the server, the transactions returned with their original 'Completed' status, causing the UI to remove the visual 'Blocked' styling. This has now been corrected.
+
+## 2. Asset Recovery Protocol (REVERT_ASSETS)
+The "Revert Assets" command is used for administrative rollbacks in cases of confirmed fraud or unauthorized transfers.
+
+### Operational Workflow:
+1. **Validation**: The system verifies the transaction exists and has not already been reverted.
+2. **Paired Recovery Signal**: For internal transfers, the system automatically identifies the "mirror" record (the other half of the transfer). If either side is already reverted, the protocol aborts to prevent double-rollbacks.
+3. **Atomic Balance Recalculation**:
+   - **For Transfers**: The system identifies both the sender and the beneficiary. It performs a "Reverse Credit/Debit" where the funds are deducted from the receiver's wallet and restored to the sender's wallet simultaneously.
+   - **For Deposits**: The credited amount is deducted from the target wallet to neutralize the unauthorized influx of funds.
+4. **Audit Trail**: BOTH paired transaction statuses are updated to `Reverted`, and a forensic reason is appended ("Administrative Reversal / Asset Recovery Protocol Executed").
+
+## 3. UI Consistency
+- **Gray-out Effect**: When a transaction or node is marked as `Blocked` or `Reverted`, the UI applies a `grayscale` filter and reduces opacity to signify that the node is no longer operational or the asset has been recovered.
+- **Persistence**: Because these changes are now committed to the database, the visual state will persist across sessions and refreshes.
