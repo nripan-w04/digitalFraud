@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { 
-  Users, Activity, AlertTriangle, DollarSign
+import {
+    Users, Activity, AlertTriangle, DollarSign
 } from 'lucide-react';
 
 const AdminOverview = () => {
@@ -59,7 +59,7 @@ const AdminOverview = () => {
                 </div>
                 <div className="glass-panel p-12 rounded-[3rem] border-white/10 h-[500px] flex items-center justify-center relative overflow-hidden group">
                     <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                   <div className="text-center relative z-10">
+                    <div className="text-center relative z-10">
                         <Users className="text-accent/40 w-20 h-20 mx-auto mb-6" />
                         <p className="text-white/50 font-display font-bold uppercase tracking-[0.2em] text-xs">Node Activity Log Empty</p>
                     </div>

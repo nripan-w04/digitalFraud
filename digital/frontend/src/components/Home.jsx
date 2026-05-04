@@ -65,7 +65,7 @@ const Home = () => {
             <section className="relative h-screen w-full overflow-hidden">
                 {/* Fixed MagicRings Background that stays while slides change */}
                 <div className="absolute inset-0 z-0">
-                    <MagicRings 
+                    <MagicRings
                         color={slides[currentSlide].hex}
                         colorTwo={slides[currentSlide].hexTwo}
                         ringCount={8}

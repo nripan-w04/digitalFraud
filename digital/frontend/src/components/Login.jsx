@@ -43,7 +43,7 @@ const Login = () => {
                 transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
                 className=" w-full border border-4 border-white/20  max-w-[550px] p-10 md:p-16 rounded-xl relative z-10  shadow-2xl"
             >
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
@@ -57,7 +57,7 @@ const Login = () => {
                 </motion.div>
 
                 <form onSubmit={handleSubmit} className="space-y-8">
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
@@ -75,7 +75,7 @@ const Login = () => {
                         />
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.4 }}
@@ -93,7 +93,7 @@ const Login = () => {
                         />
                     </motion.div>
 
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5 }}
@@ -119,7 +119,7 @@ const Login = () => {
                     </motion.button>
                 </form>
 
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.7 }}

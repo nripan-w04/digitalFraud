@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Search, Filter, ShieldAlert,
-    Zap, Database, BarChart3, MoreHorizontal, UserCheck, Activity, RefreshCw, Loader2, ArrowRight,
+    Search, Filter, Database, Activity, RefreshCw, Loader2,
     Terminal, Cpu, Globe, Crosshair, ChevronRight, Eye, DollarSign
 } from 'lucide-react';
 import API from '../../api/axios';
@@ -293,16 +292,16 @@ const AnalystDashboard = () => {
                                         exit={{ opacity: 0, scale: 0.98 }}
                                         transition={{ duration: 0.4, delay: index * 0.03 }}
                                         className={`group relative border rounded-2xl p-6 transition-all duration-500 overflow-hidden ${tx.status === 'Blocked' || tx.status === 'Reverted'
-                                                ? 'bg-rose-500/5 border-rose-500/20 grayscale'
-                                                : 'bg-white/[0.06] border-white/10 hover:border-accent/20'
+                                            ? 'bg-rose-500/5 border-rose-500/20 grayscale'
+                                            : 'bg-white/[0.06] border-white/10 hover:border-accent/20'
                                             }`}
                                     >
                                         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 relative z-10">
                                             <div className="flex items-center gap-8">
                                                 <div className="flex flex-col gap-2 min-w-[140px]">
                                                     <div className={`text-xs font-bold uppercase tracking-[0.2em] px-4 py-1.5 rounded-lg border w-fit ${tx.status === 'Blocked' || tx.status === 'Reverted'
-                                                            ? 'bg-white/20 text-white/60 border-white/20'
-                                                            : 'bg-accent/10 text-accent border-accent/20'
+                                                        ? 'bg-white/20 text-white/60 border-white/20'
+                                                        : 'bg-accent/10 text-accent border-accent/20'
                                                         }`}>
                                                         {tx.status}
                                                     </div>
@@ -498,16 +497,16 @@ const InvestigationPanel = ({ tx, onClose, onActionSuccess }) => (
                         try {
                             if (tx.isBlocked) {
                                 // RE-ADD / UNBLOCK logic
-                                const res = await API.post('/digital/admin/unblock-user', { 
-                                    userId: tx.userId._id || tx.userId 
+                                const res = await API.post('/digital/admin/unblock-user', {
+                                    userId: tx.userId._id || tx.userId
                                 });
                                 toast.success(res.data.message);
                                 onActionSuccess(tx._id, 'Unblocked');
                             } else {
                                 // BLOCK logic
-                                const res = await API.post('/digital/admin/block-node', { 
-                                    deviceId: tx.deviceId, 
-                                    userId: tx.userId._id || tx.userId 
+                                const res = await API.post('/digital/admin/block-node', {
+                                    deviceId: tx.deviceId,
+                                    userId: tx.userId._id || tx.userId
                                 });
                                 toast.success(res.data.message);
                                 onActionSuccess(tx._id, 'Blocked');
@@ -516,11 +515,10 @@ const InvestigationPanel = ({ tx, onClose, onActionSuccess }) => (
                             toast.error("Operation failed");
                         }
                     }}
-                    className={`flex-1 py-6 rounded-2xl text-xs font-bold uppercase tracking-[0.3em] transition-all border ${
-                        tx.isBlocked 
-                        ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/40' 
-                        : 'bg-white/5 border-white/10 text-white/60 hover:bg-rose-500/20 hover:text-rose-500 hover:border-rose-500/30'
-                    }`}
+                    className={`flex-1 py-6 rounded-2xl text-xs font-bold uppercase tracking-[0.3em] transition-all border ${tx.isBlocked
+                            ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/40'
+                            : 'bg-white/5 border-white/10 text-white/60 hover:bg-rose-500/20 hover:text-rose-500 hover:border-rose-500/30'
+                        }`}
                 >
                     {tx.isBlocked ? 'RE-ADD USER' : 'BLOCK_NODE'}
                 </button>
@@ -538,11 +536,10 @@ const InvestigationPanel = ({ tx, onClose, onActionSuccess }) => (
                         }
                     }}
                     disabled={tx.isReverted}
-                    className={`flex-1 py-6 rounded-2xl text-xs font-bold uppercase tracking-[0.3em] transition-all border ${
-                        tx.isReverted
-                        ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30 cursor-not-allowed'
-                        : 'bg-white/5 border-white/10 text-white/60 hover:bg-emerald-500/20 hover:text-emerald-500 hover:border-emerald-500/30'
-                    }`}
+                    className={`flex-1 py-6 rounded-2xl text-xs font-bold uppercase tracking-[0.3em] transition-all border ${tx.isReverted
+                            ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30 cursor-not-allowed'
+                            : 'bg-white/5 border-white/10 text-white/60 hover:bg-emerald-500/20 hover:text-emerald-500 hover:border-emerald-500/30'
+                        }`}
                 >
                     {tx.isReverted ? 'REVERTED' : 'REVERT_ASSETS'}
                 </button>

@@ -90,10 +90,10 @@ const ViewerDashboard = () => {
                 return;
             }
             navigator.geolocation.getCurrentPosition(
-                (pos) => resolve({ 
-                    city: "Real-time Verified", 
-                    lat: pos.coords.latitude, 
-                    lon: pos.coords.longitude 
+                (pos) => resolve({
+                    city: "Real-time Verified",
+                    lat: pos.coords.latitude,
+                    lon: pos.coords.longitude
                 }),
                 (err) => {
                     let msg = "GEOLOCATION_DENIED: Critical security telemetry blocked. Transactions aborted.";
@@ -274,21 +274,21 @@ const ViewerDashboard = () => {
                     <h1 className="text-5xl lg:text-7xl font-display font-black mb-6 text-white tracking-tighter uppercase leading-[0.9]">
                         Security <br /><span className="text-accent">Command</span> Console
                     </h1>
-                <div className="flex flex-wrap items-center gap-6 text-xs font-bold tracking-[0.2em] text-white/60 uppercase">
-                    <div className="flex items-center gap-3 px-5 py-2 bg-accent/10 border border-accent/20 text-accent rounded-full">
-                        <span className="w-2 h-2 bg-accent rounded-full animate-pulse shadow-[0_0_8px_rgba(14,165,233,0.8)]" />
-                        Status: ENCRYPTED
-                    </div>
-                    <div className="flex items-center gap-3 px-2">
-                        <User size={14} className="text-white/40" />
-                        Node_Identity: <span className="text-white/80">{user?.username}</span>
+                    <div className="flex flex-wrap items-center gap-6 text-xs font-bold tracking-[0.2em] text-white/60 uppercase">
+                        <div className="flex items-center gap-3 px-5 py-2 bg-accent/10 border border-accent/20 text-accent rounded-full">
+                            <span className="w-2 h-2 bg-accent rounded-full animate-pulse shadow-[0_0_8px_rgba(14,165,233,0.8)]" />
+                            Status: ENCRYPTED
+                        </div>
+                        <div className="flex items-center gap-3 px-2">
+                            <User size={14} className="text-white/40" />
+                            Node_Identity: <span className="text-white/80">{user?.username}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="flex items-center gap-5 px-8 py-5 bg-white/10 border border-white/20 rounded-full text-white/60 font-bold text-xs uppercase tracking-[0.2em] w-full md:w-auto justify-center">
-                <Calendar size={18} className="text-accent" />
-                Synchronization: <span className="text-white">Active</span>
-            </div>
+                <div className="flex items-center gap-5 px-8 py-5 bg-white/10 border border-white/20 rounded-full text-white/60 font-bold text-xs uppercase tracking-[0.2em] w-full md:w-auto justify-center">
+                    <Calendar size={18} className="text-accent" />
+                    Synchronization: <span className="text-white">Active</span>
+                </div>
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-12 mb-20 items-stretch">
@@ -300,7 +300,7 @@ const ViewerDashboard = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         className="bg-linear-to-br from-accent/20 to-transparent border border-accent/20 rounded-[4rem] p-12 backdrop-blur-3xl relative overflow-hidden group"
                     >
-                    <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+                        <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
                         <div className="absolute -top-20 -right-20 p-6 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
                             <Wallet size={300} />
                         </div>
@@ -322,15 +322,15 @@ const ViewerDashboard = () => {
                                 <h2 className="text-6xl lg:text-7xl font-display w-70 font-medium text-white tracking-tighter uppercase">
                                     {wallet ? `${wallet.currency === 'USD' ? '$' : ''}${formatCurrency(wallet.balance)}` : '$0.00'}
                                 </h2>
-                                <button 
+                                <button
                                     onClick={() => setIsDepositModalOpen(true)}
                                     className="btn-sky py-4 px-8 text-xs uppercase font-bold tracking-[0.2em] flex items-center gap-4 shadow-2xl shadow-accent/20"
                                 >
                                     <Plus size={18} /> ADD_FUNDS
                                 </button>
                             </div>
-                            
-                             <div className="pt-10 border-t border-white/5">
+
+                            <div className="pt-10 border-t border-white/5">
                                 <h4 className="text-xs font-bold text-accent/80 uppercase tracking-[0.3em] mb-8">Intelligence Transfer</h4>
                                 <form onSubmit={(e) => { e.preventDefault(); setIsConfirmModalOpen(true); }} className="flex flex-col gap-5">
                                     <div className="relative">
@@ -344,7 +344,7 @@ const ViewerDashboard = () => {
                                             required
                                         />
                                     </div>
-                                     <div className="flex gap-5">
+                                    <div className="flex gap-5">
                                         <div className="relative flex-1">
                                             <DollarSign className="absolute left-6 top-1/2 -translate-y-1/2 text-accent" size={18} />
                                             <input
@@ -390,8 +390,8 @@ const ViewerDashboard = () => {
                             <div className="pt-8 mt-2 border-t border-white/5">
                                 <div className="text-[9px] text-white/20 font-black uppercase tracking-[0.4em] mb-4">Intelligence Clearance</div>
                                 <div className={`inline-flex items-center gap-3 px-6 py-2 rounded-full text-[9px] font-black uppercase tracking-[0.3em] ${user?.kycStatus === 'Verified' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                                        user?.kycStatus === 'Rejected' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
-                                            'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                    user?.kycStatus === 'Rejected' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
+                                        'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                                     }`}>
                                     {user?.kycStatus === 'Verified' ? <ShieldCheck size={14} /> : <Clock size={14} />}
                                     {user?.kycStatus || 'PROCESSING'}
@@ -429,8 +429,8 @@ const ViewerDashboard = () => {
                                 <div key={tx._id} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-accent/30 transition-all duration-500 group/item hover:bg-white/[0.04] gap-6">
                                     <div className="flex items-center gap-6 min-w-0">
                                         <div className={`w-14 h-14 rounded-2xl flex-shrink-0 flex items-center justify-center border transition-transform duration-500 group-hover/item:scale-110 ${tx.type === 'Deposit' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
-                                                tx.type === 'Withdrawal' ? 'bg-rose-500/10 text-rose-500 border-rose-500/20' :
-                                                    'bg-accent/10 text-accent border-accent/20'
+                                            tx.type === 'Withdrawal' ? 'bg-rose-500/10 text-rose-500 border-rose-500/20' :
+                                                'bg-accent/10 text-accent border-accent/20'
                                             }`}>
                                             {tx.type === 'Deposit' ? <ArrowDownRight size={24} /> :
                                                 tx.type === 'Withdrawal' ? <ArrowUpRight size={24} /> :
@@ -458,7 +458,7 @@ const ViewerDashboard = () => {
                                                 {tx.status}
                                             </div>
                                             {tx.status === 'Completed' && (
-                                                <button 
+                                                <button
                                                     onClick={async () => {
                                                         const reason = prompt("Enter reason for reporting this transaction:");
                                                         if (reason) {
@@ -539,7 +539,7 @@ const ViewerDashboard = () => {
                     </div>
                 </section>
             </div>
-            
+
             {/* Confirmation Modal for Transfer */}
             <ConfirmationModal
                 isOpen={isConfirmModalOpen}
@@ -562,9 +562,9 @@ const ViewerDashboard = () => {
                         <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-relaxed">Input the liquidity amount to be funneled into your secure digital vault via the PayU Gateway.</p>
                         <div className="relative">
                             <DollarSign className="absolute left-6 top-1/2 -translate-y-1/2 text-accent" size={24} />
-                            <input 
-                                type="number" 
-                                placeholder="AMOUNT" 
+                            <input
+                                type="number"
+                                placeholder="AMOUNT"
                                 value={depositAmount}
                                 onChange={(e) => setDepositAmount(e.target.value)}
                                 className="w-full bg-white/10 border border-white/20 rounded-2xl pl-16 pr-8 py-5 text-[10px] font-bold uppercase tracking-widest outline-none focus:border-accent/30 transition-all placeholder:opacity-40"

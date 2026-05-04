@@ -26,7 +26,7 @@ const Footer = () => {
     return (
         <footer className="bg-background border-t border-white/5 pt-32 pb-16 relative overflow-hidden">
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
-            
+
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-20 mb-24">
                     <div className="col-span-1 md:col-span-1">
@@ -72,10 +72,10 @@ const Footer = () => {
                         <h4 className="text-white font-display font-bold text-xs uppercase tracking-[0.2em] mb-12">Connectivity</h4>
                         <p className="text-xs text-white/40 mb-6 font-bold uppercase tracking-[0.2em]">Join the network</p>
                         <div className="flex gap-2">
-                            <input 
-                                type="email" 
-                                placeholder="ACCESS_NODE@ENTERPRISE.IO" 
-                                className="bg-white/5 border border-white/5 rounded-full px-6 py-4 text-xs w-full outline-none focus:border-accent/50 transition-all font-bold placeholder:opacity-30" 
+                            <input
+                                type="email"
+                                placeholder="ACCESS_NODE@ENTERPRISE.IO"
+                                className="bg-white/5 border border-white/5 rounded-full px-6 py-4 text-xs w-full outline-none focus:border-accent/50 transition-all font-bold placeholder:opacity-30"
                             />
                             <button className="bg-accent p-4 rounded-full hover:bg-sky-400 transition-all text-black">
                                 <Mail size={16} />

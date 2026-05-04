@@ -36,14 +36,7 @@ const Navbar = () => {
                     </span>
                 </Link>
 
-                <div className="hidden md:flex items-center gap-12">
-                    {user && (
-                        <NavLink to={user.role === 'Admin' ? '/admin' : '/'} active={location.pathname.startsWith('/admin') || location.pathname === '/'}>Dashboard</NavLink>
-                    )}
-                    {!user && <NavLink to="/" active={location.pathname === '/'}>Platform</NavLink>}
-                    <NavLink to="#features">Intelligence</NavLink>
-                    <NavLink to="#">Global Network</NavLink>
-                </div>
+
 
                 <div className="hidden md:flex items-center gap-8">
                     {user ? (

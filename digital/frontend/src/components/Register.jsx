@@ -40,7 +40,7 @@ const Register = () => {
                 transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
                 className="border-4 border-white/20  w-full max-w-[550px] p-10 md:p-16 rounded-md relative z-10 border-white/5 shadow-2xl"
             >
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
@@ -55,7 +55,7 @@ const Register = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.3 }}
@@ -73,7 +73,7 @@ const Register = () => {
                             />
                         </motion.div>
 
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.4 }}
@@ -93,7 +93,7 @@ const Register = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.5 }}
@@ -111,7 +111,7 @@ const Register = () => {
                             />
                         </motion.div>
 
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.6 }}
@@ -131,7 +131,7 @@ const Register = () => {
                         </motion.div>
                     </div>
 
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.7 }}
@@ -167,7 +167,7 @@ const Register = () => {
                     </motion.button>
                 </form>
 
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.9 }}
