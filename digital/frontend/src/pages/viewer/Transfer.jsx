@@ -14,10 +14,38 @@ const Transfer = () => {
         type: 'Transfer'
     });
     const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState(null);
+    const [riskInfo, setRiskInfo] = useState(null);
+    const [analyzing, setAnalyzing] = useState(false);
+
+    const handlePreCheck = async () => {
+        if (!formData.receiverEmail || !formData.amount) {
+            toast.error("IDENT_PARAM_MISSING: Recipient and magnitude required for analysis.");
+            return;
+        }
+
+        setAnalyzing(true);
+        try {
+            const response = await API.post('/digital/transactions/pre-check', {
+                recipientEmail: formData.receiverEmail,
+                amount: parseFloat(formData.amount),
+                deviceId: "dev_neural_pre",
+                location: { lat: 0, lon: 0 } // Basic pre-check
+            });
+            setRiskInfo(response.data);
+            toast.success("Security analysis complete.");
+        } catch (error) {
+            toast.error("Analysis protocol failed.");
+        } finally {
+            setAnalyzing(false);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!riskInfo) {
+            toast.error("SECURITY_BYPASS_ATTEMPT: Risk analysis required before initiation.");
+            return;
+        }
         setLoading(true);
         setResult(null);
 
@@ -48,7 +76,7 @@ const Transfer = () => {
         try {
             const location = await getLocation();
             const response = await API.post('/digital/transactions/initiate', {
-                ...formData,
+                recipientEmail: formData.receiverEmail,
                 amount: parseFloat(formData.amount),
                 deviceId: "dev_neural_" + Math.random().toString(36).substr(2, 9),
                 location: location
@@ -70,8 +98,6 @@ const Transfer = () => {
                 }
             });
 
-            // Only show the failed result screen for server-side failures
-            // Geolocation failures should keep the user on the form to retry
             if (error.response) {
                 setResult({ success: false, message: errorMsg });
             }
@@ -105,7 +131,10 @@ const Transfer = () => {
                                         required
                                         placeholder="address@identity.com"
                                         value={formData.receiverEmail}
-                                        onChange={(e) => setFormData({...formData, receiverEmail: e.target.value})}
+                                        onChange={(e) => {
+                                            setFormData({...formData, receiverEmail: e.target.value});
+                                            setRiskInfo(null);
+                                        }}
                                         className="w-full bg-white/5 border border-white/5 rounded-3xl px-8 py-5 text-white outline-none focus:border-accent/30 transition-all font-medium uppercase tracking-widest text-sm placeholder:opacity-20"
                                     />
                                 </div>
@@ -119,17 +148,59 @@ const Transfer = () => {
                                         required
                                         placeholder="0.00"
                                         value={formData.amount}
-                                        onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                                        onChange={(e) => {
+                                            setFormData({...formData, amount: e.target.value});
+                                            setRiskInfo(null);
+                                        }}
                                         className="w-full bg-white/5 border border-white/5 rounded-3xl px-8 py-5 text-white outline-none focus:border-accent/30 transition-all font-medium uppercase tracking-widest text-sm placeholder:opacity-20"
                                     />
                                 </div>
 
-                                <button 
-                                    disabled={loading}
-                                    className="w-full btn-sky !py-6 text-xs font-medium uppercase tracking-[0.4em] flex items-center justify-center gap-4 mt-8"
-                                >
-                                    {loading ? <Loader2 size={18} className="animate-spin" /> : <><Send size={18} /> INITIATE_TRANSFER</>}
-                                </button>
+                                {riskInfo && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className={`p-6 rounded-3xl border ${
+                                            riskInfo.level === 'SAFE' ? 'bg-emerald-500/5 border-emerald-500/20' :
+                                            riskInfo.level === 'ELEVATED' ? 'bg-amber-500/5 border-amber-500/20' :
+                                            'bg-rose-500/5 border-rose-500/20'
+                                        }`}
+                                    >
+                                        <div className="flex justify-between items-center mb-3">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Security_Level</span>
+                                            <span className={`text-[10px] font-black uppercase tracking-widest ${
+                                                riskInfo.level === 'SAFE' ? 'text-emerald-500' :
+                                                riskInfo.level === 'ELEVATED' ? 'text-amber-500' :
+                                                'text-rose-500'
+                                            }`}>
+                                                {riskInfo.level} ({riskInfo.riskScore}%)
+                                            </span>
+                                        </div>
+                                        <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 leading-relaxed">
+                                            {riskInfo.insight}
+                                        </p>
+                                    </motion.div>
+                                )}
+
+                                <div className="flex flex-col gap-4">
+                                    {!riskInfo ? (
+                                        <button 
+                                            type="button"
+                                            onClick={handlePreCheck}
+                                            disabled={analyzing || !formData.receiverEmail || !formData.amount}
+                                            className="w-full bg-white/5 hover:bg-white/10 border border-white/10 py-6 rounded-3xl text-xs font-medium uppercase tracking-[0.4em] flex items-center justify-center gap-4 transition-all disabled:opacity-20"
+                                        >
+                                            {analyzing ? <Loader2 size={18} className="animate-spin" /> : <><Shield size={18} className="text-accent" /> ANALYZE_SECURITY_PROTOCOL</>}
+                                        </button>
+                                    ) : (
+                                        <button 
+                                            disabled={loading}
+                                            className="w-full btn-sky !py-6 text-xs font-medium uppercase tracking-[0.4em] flex items-center justify-center gap-4"
+                                        >
+                                            {loading ? <Loader2 size={18} className="animate-spin" /> : <><Send size={18} /> INITIATE_TRANSFER</>}
+                                        </button>
+                                    )}
+                                </div>
                             </form>
                         ) : (
                             <motion.div 

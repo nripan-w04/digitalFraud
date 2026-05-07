@@ -3,12 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, DollarSign, Download, AlertCircle, RefreshCw, Globe, Eye, X } from 'lucide-react';
 import api from '../../api/axios';
 import { toast } from 'react-hot-toast';
+import UIContext from '../../context/UIContext';
+import { useContext } from 'react';
 
 const AdminTransactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const { showConfirm } = useContext(UIContext);
 
     const handleActionSuccess = (txId, newStatus) => {
         setTransactions(prev => prev.map(tx => tx._id === txId ? { ...tx, status: newStatus } : tx));
@@ -51,7 +54,7 @@ const AdminTransactions = () => {
             </section>
 
             {error && (
-                <div className="p-5 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-4 text-rose-400">
+                <div className="p-5 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-4 text-amber-400">
                     <AlertCircle size={24} />
                     <p className="text-[10px] font-medium uppercase tracking-widest">{error}</p>
                 </div>
@@ -99,8 +102,8 @@ const AdminTransactions = () => {
                                             <span className="text-accent text-xs font-bold bg-accent/10 px-3 py-1.5 rounded-lg border border-accent/20 tracking-wider uppercase">{txn._id.slice(-8).toUpperCase()}</span>
                                         </td>
                                         <td className="p-5 font-medium text-white/80 text-sm uppercase tracking-tight">{txn.userId?.username || 'REDACTED_NODE'}</td>
-                                        <td className="p-5">
-                                            <span className={`text-base font-display font-medium tracking-tight ${txn.amount < 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
+                                         <td className="p-5">
+                                            <span className={`text-base font-display font-medium tracking-tight ${txn.amount < 0 ? 'text-amber-500' : 'text-emerald-500'}`}>
                                                 {txn.amount < 0 ? '-' : '+'}${Math.abs(txn.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                             </span>
                                         </td>
@@ -110,7 +113,7 @@ const AdminTransactions = () => {
                                         <td className="p-5">
                                             <span className={`px-4 py-1.5 text-xs font-bold uppercase tracking-widest rounded-full border ${txn.status === 'Completed' || txn.status === 'Clean' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.05)]' :
                                                 txn.status === 'Suspicious' || txn.status === 'Pending' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.05)]' :
-                                                    'bg-rose-500/10 text-rose-500 border-rose-500/20 shadow-[0_0_10px_rgba(244,63,94,0.05)]'
+                                                    'bg-cyan-500/10 text-cyan-500 border-cyan-500/20 shadow-[0_0_10px_rgba(34,211,238,0.05)]'
                                                 }`}>
                                                 {txn.status || 'UNSPECIFIED'}
                                             </span>
@@ -118,7 +121,7 @@ const AdminTransactions = () => {
                                         <td className="p-5 text-right">
                                             <button 
                                                 onClick={() => setSelectedTransaction(txn)}
-                                                className="text-accent text-xs font-bold uppercase tracking-widest hover:text-white transition-colors border-b border-transparent hover:border-white/20 pb-0.5"
+                                                className="text-cyan-500 text-xs font-bold uppercase tracking-widest hover:text-white transition-colors border-b border-transparent hover:border-white/20 pb-0.5"
                                             >
                                                 INSPECT
                                             </button>
@@ -230,8 +233,8 @@ const InvestigationPanel = ({ tx, onClose, onActionSuccess }) => (
                     disabled={tx.status === 'Blocked'}
                     className={`flex-1 py-6 rounded-2xl text-xs font-bold uppercase tracking-[0.3em] transition-all border ${
                         tx.status === 'Blocked' 
-                        ? 'bg-rose-500/20 text-rose-500 border-rose-500/30 cursor-not-allowed' 
-                        : 'bg-white/5 border-white/10 text-white/60 hover:bg-rose-500/20 hover:text-rose-500 hover:border-rose-500/30'
+                        ? 'bg-amber-500/20 text-amber-500 border-amber-500/30 cursor-not-allowed' 
+                        : 'bg-white/5 border-white/10 text-white/60 hover:bg-amber-500/20 hover:text-amber-500 hover:border-amber-500/30'
                     }`}
                 >
                     {tx.status === 'Blocked' ? 'TERMINATED' : 'BLOCK_NODE'}
@@ -239,7 +242,13 @@ const InvestigationPanel = ({ tx, onClose, onActionSuccess }) => (
                 <button
                     onClick={async () => {
                         if (tx.status === 'Reverted') return;
-                        if (window.confirm("WARNING: Initiating Asset Recovery Protocol. This will reverse balances. Proceed?")) {
+                        const confirmed = await showConfirm({
+                            title: "Asset Recovery Protocol",
+                            message: "WARNING: Initiating Asset Recovery Protocol. This will reverse balances. Proceed?",
+                            confirmText: "EXECUTE_REVERSAL",
+                            cancelText: "ABORT"
+                        });
+                        if (confirmed) {
                             try {
                                 const res = await api.post(`/digital/admin/transactions/${tx._id}/revert`);
                                 toast.success(res.data.message);

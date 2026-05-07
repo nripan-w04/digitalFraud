@@ -13,17 +13,16 @@ import ViewerDashboard from './pages/viewer/ViewerDashboard';
 import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import { Toaster } from 'react-hot-toast';
-import './App.css';
+import { UIProvider } from './context/UIProvider';
 
 function App() {
   const [user] = useState(JSON.parse(localStorage.getItem('user')));
   const role = user?.role;
 
   return (
-    <BrowserRouter>
-      <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
-      <Navbar user={user} />
+    <UIProvider>
+      <BrowserRouter>
+        <Navbar user={user} />
       <main className="app-main">
         <Routes>
           {/* Public Routes */}
@@ -78,7 +77,8 @@ function App() {
         </Routes>
       </main>
       {role !== 'Admin' && <Footer />}
-    </BrowserRouter>
+      </BrowserRouter>
+    </UIProvider>
   );
 }
 

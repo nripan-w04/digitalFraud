@@ -101,14 +101,14 @@ export const handlePayUResponse = async (req, res, next) => {
             
             // Forensic check: Blocked users cannot complete transactions
             if (sender && sender.isBlocked) {
-                return res.redirect(`http://localhost:5173/?payment=error&message=AccountTerminated`);
+                return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/?payment=error&message=AccountTerminated`);
             }
 
             const receiver = await User.findOne({ email: receiverEmail });
 
             if (!sender || !receiver) {
                 console.error("Sender or Receiver not found during PayU response processing");
-                return res.redirect(`http://localhost:5173/?payment=error&message=UserNotFound`);
+                return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/?payment=error&message=UserNotFound`);
             }
 
             const senderWallet = await Wallet.findOne({ userId: sender._id });
@@ -116,7 +116,7 @@ export const handlePayUResponse = async (req, res, next) => {
 
             if (!senderWallet || !receiverWallet) {
                 console.error("Wallets not found during PayU response processing");
-                return res.redirect(`http://localhost:5173/?payment=error&message=WalletNotFound`);
+                return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/?payment=error&message=WalletNotFound`);
             }
 
             // 2. AI Fraud Check
@@ -182,14 +182,14 @@ export const handlePayUResponse = async (req, res, next) => {
                 await receiverTx.save();
             }
 
-            res.redirect(`http://localhost:5173/?payment=success&txnid=${txnid}&risk=${riskScore}`);
+            res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/?payment=success&txnid=${txnid}&risk=${riskScore}`);
         } else {
             const errorMsg = req.body.error_Message || req.body.unmappedstatus || "Transaction declined by bank or user";
-            res.redirect(`http://localhost:5173/?payment=failed&txnid=${txnid}&message=${encodeURIComponent(errorMsg)}`);
+            res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/?payment=failed&txnid=${txnid}&message=${encodeURIComponent(errorMsg)}`);
         }
 
     } catch (error) {
         console.error("PayU Response Error:", error);
-        res.redirect(`http://localhost:5173/?payment=error&message=${encodeURIComponent(error.message)}`);
+        res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/?payment=error&message=${encodeURIComponent(error.message)}`);
     }
 };

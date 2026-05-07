@@ -2,29 +2,32 @@ import User from "../model/userModel.js";
 import Transaction from "../model/transactionModel.js";
 import Blacklist from "../model/blacklistModel.js";
 import Wallet from "../model/walletModel.js";
+import PDFDocument from "pdfkit";
+import nodemailer from "nodemailer";
+import { PassThrough } from "stream";
 
 export const blockDevice = async (req, res) => {
     try {
         const { userId, reason } = req.body;
         if (!userId) return res.status(400).json({ message: "User ID required for forensic termination" });
- 
+
         // 1. Block the specific User account (Primary forensic action)
         await User.findByIdAndUpdate(userId, { isBlocked: true });
-        
+
         // 2. Update all transactions from this user to reflect the block status
         await Transaction.updateMany(
             { userId },
-            { 
+            {
                 isBlocked: true,
                 status: 'Blocked',
-                fraudReason: reason || "Account Terminated by Analyst" 
+                fraudReason: reason || "Account Terminated by Analyst"
             }
         );
- 
+
         if (global.io) {
             global.io.emit('node_terminated', { userId });
         }
- 
+
         res.status(200).json({ message: `Protocol Executed: Forensic termination of User Account finalized. Shared hardware terminal remains operational.` });
     } catch (error) {
         res.status(500).json({ message: "Termination failed", error: error.message });
@@ -233,21 +236,134 @@ export const unblockUser = async (req, res) => {
         if (!userId) return res.status(400).json({ message: "User ID required for restoration" });
 
         await User.findByIdAndUpdate(userId, { isBlocked: false });
-        
+
         // 2. Restore all transactions to their active state
         await Transaction.updateMany(
             { userId, status: 'Blocked' },
-            { 
+            {
                 isBlocked: false,
                 status: 'Completed'
             }
         );
-            global.io.emit('user_unblocked', { userId });
+        global.io.emit('user_unblocked', { userId });
         res.status(200).json({ message: "Forensic Restoration finalized: User identity cleared for network access." });
 
-        }
+    }
 
-     catch (error) {
+    catch (error) {
         res.status(500).json({ message: "Unblocking failed", error: error.message });
     }
 }
+export const getSuspiciousTransactions = async (req, res) => {
+    try {
+        const transactions = await Transaction.find({
+            $or: [
+                { status: { $in: ['Suspicious', 'Fraud'] } },
+                { riskScore: { $gt: 75 } }
+            ]
+        })
+            .populate("userId", "username email")
+            .populate("beneficiaryId", "username email")
+            .sort({ createdAt: -1 });
+
+        res.status(200).json(transactions);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching suspicious transactions", error: error.message });
+    }
+};
+
+export const exportSuspiciousTransactions = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const transactions = await Transaction.find({
+            $or: [
+                { status: { $in: ['Suspicious', 'Fraud'] } },
+                { riskScore: { $gt: 75 } }
+            ]
+        })
+            .populate("userId", "username email")
+            .populate("beneficiaryId", "username email")
+            .sort({ createdAt: -1 });
+
+        const doc = new PDFDocument({ margin: 30, size: 'A4' });
+        const stream = new PassThrough();
+
+        // Collect PDF data in a buffer to send as attachment if needed
+        const chunks = [];
+        stream.on('data', chunk => chunks.push(chunk));
+
+        doc.pipe(stream);
+
+        // PDF Content
+        doc.fontSize(20).fillColor('#ef4444').text('FORENSIC ANALYTICS REPORT', { align: 'center' });
+        doc.fontSize(10).fillColor('#666666').text(`Generated on: ${new Date().toLocaleString()}`, { align: 'center' });
+        doc.moveDown();
+        doc.strokeColor('#eeeeee').lineWidth(1).moveTo(30, doc.y).lineTo(565, doc.y).stroke();
+        doc.moveDown();
+
+        doc.fontSize(14).fillColor('#333333').text('SUSPICIOUS TRANSACTION LOGS', { underline: true });
+        doc.moveDown();
+
+        transactions.forEach((tx, index) => {
+            doc.fontSize(10).fillColor('#000000').text(`${index + 1}. Transaction ID: ${tx._id}`);
+            doc.fontSize(9).fillColor('#444444').text(`   User: ${tx.userId?.username} (${tx.userId?.email})`);
+            doc.fontSize(9).text(`   Amount: $${Math.abs(tx.amount)} | Type: ${tx.type} | Risk Score: ${tx.riskScore}%`);
+            doc.fontSize(9).text(`   Status: ${tx.status} | Reason: ${tx.fraudReason || 'N/A'}`);
+            doc.fontSize(9).text(`   Location: ${tx.location?.city || 'Unknown'} (${tx.location?.lat}, ${tx.location?.lon})`);
+            doc.fontSize(9).text(`   Timestamp: ${new Date(tx.createdAt).toLocaleString()}`);
+            doc.moveDown(0.5);
+            doc.strokeColor('#f0f0f0').lineWidth(0.5).moveTo(50, doc.y).lineTo(545, doc.y).stroke();
+            doc.moveDown(0.5);
+        });
+
+        doc.end();
+
+        stream.on('end', async () => {
+            try {
+                const pdfBuffer = Buffer.concat(chunks);
+
+                if (email) {
+                    const transporter = nodemailer.createTransport({
+                        host: process.env.EMAIL_HOST,
+                        port: process.env.EMAIL_PORT,
+                        secure: process.env.EMAIL_SECURE === 'true',
+                        auth: {
+                            user: process.env.EMAIL_USER,
+                            pass: process.env.EMAIL_PASS,
+                        },
+                    });
+
+                    await transporter.sendMail({
+                        from: `"FraudGuard Sentinel" <reports@fraudguard.io>`,
+                        to: email,
+                        subject: "URGENT: Suspicious Transaction Report",
+                        text: "Please find the attached forensic report regarding high-risk transactions detected by the neural network.",
+                        attachments: [
+                            {
+                                filename: 'Suspicious_Transactions_Report.pdf',
+                                content: pdfBuffer
+                            }
+                        ]
+                    });
+
+                    return res.json({ message: `Forensic report successfully transmitted to ${email}` });
+                }
+
+                // If no email, treat as direct download
+                res.setHeader('Content-Type', 'application/pdf');
+                res.setHeader('Content-Disposition', 'attachment; filename=suspicious_report.pdf');
+                return res.send(pdfBuffer);
+
+            } catch (innerError) {
+                console.error("Neural Transmission Error:", innerError);
+                if (!res.headersSent) {
+                    res.status(500).json({ message: "Neural transmission failure", error: innerError.message });
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Export Error:", error);
+        res.status(500).json({ message: "Export failed", error: error.message });
+    }
+};

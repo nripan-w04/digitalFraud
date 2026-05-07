@@ -3,6 +3,8 @@ import api from '../../api/axios';
 import { Users, Eye, CheckCircle, XCircle, Shield, Mail, Calendar, User, Search, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import UIContext from '../../context/UIContext';
+import { useContext } from 'react';
 
 const UserManagement = () => {
     const [usersList, setUsersList] = useState([]);
@@ -10,6 +12,7 @@ const UserManagement = () => {
     const [error, setError] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const { showConfirm } = useContext(UIContext);
 
     const fetchUsers = async () => {
         try {
@@ -29,6 +32,14 @@ const UserManagement = () => {
     }, []);
 
     const handleAction = async (userId, newRole, isApproved, actionName) => {
+        const confirmed = await showConfirm({
+            title: `${actionName} Node Access`,
+            message: `Are you sure you want to ${actionName.toLowerCase()} this intelligence node?`,
+            confirmText: actionName.toUpperCase(),
+            cancelText: "CANCEL"
+        });
+        if (!confirmed) return;
+
         try {
             await api.put(`/digital/admin/users/${userId}/role`, { role: newRole, isApproved });
             toast.success(`User ${actionName} successfully`);
@@ -109,9 +120,9 @@ const UserManagement = () => {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="p-6">
-                                            <span className={`px-4 py-2 text-xs font-bold uppercase tracking-widest rounded-md border ${u.role === 'Admin' ? 'bg-rose-500/10 text-rose-500 border-rose-500/20' :
-                                                    u.role === 'Analyst' ? 'bg-accent/10 text-accent border-accent/20' :
+                                         <td className="p-6">
+                                            <span className={`px-4 py-2 text-xs font-bold uppercase tracking-widest rounded-md border ${u.role === 'Admin' ? 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20' :
+                                                    u.role === 'Analyst' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
                                                         'bg-white/10 text-white/60 border-white/20'
                                                 }`}>
                                                 {u.role}
@@ -147,7 +158,7 @@ const UserManagement = () => {
                                                         </button>
                                                         <button
                                                             onClick={() => handleAction(u._id, 'Viewer', true, 'Rejected')}
-                                                            className="px-5 py-2.5 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white text-xs font-bold uppercase tracking-widest rounded-lg border border-rose-500/20 transition-all flex items-center gap-2"
+                                                            className="px-5 py-2.5 bg-amber-500/10 hover:bg-amber-500 text-amber-500 hover:text-white text-xs font-bold uppercase tracking-widest rounded-lg border border-amber-500/20 transition-all flex items-center gap-2"
                                                         >
                                                             <XCircle size={14} /> REJECT
                                                         </button>
@@ -157,7 +168,7 @@ const UserManagement = () => {
                                                 {u.role === 'Analyst' && u.isApproved && (
                                                     <button
                                                         onClick={() => handleAction(u._id, 'Viewer', true, 'Revoked')}
-                                                        className="px-5 py-2.5 bg-white/10 hover:bg-rose-500 text-white/60 hover:text-white text-xs font-bold uppercase tracking-widest rounded-lg border border-white/20 transition-all"
+                                                        className="px-5 py-2.5 bg-white/10 hover:bg-amber-500 text-white/60 hover:text-white text-xs font-bold uppercase tracking-widest rounded-lg border border-white/20 transition-all"
                                                     >
                                                         REVOKE_ACCESS
                                                     </button>

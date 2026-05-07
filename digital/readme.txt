@@ -13,6 +13,6 @@ open a new terminal : cd frontend && npm install && npm run dev
 
 open a new terminal :cd backend && npm install && npm start
 
-
+pass:https://myaccount.google.com/apppasswords
 
 

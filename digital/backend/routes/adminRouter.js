@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllUsers, updateUserRole, getAnalytics, getAllTransactions, blockDevice, unblockUser, revertTransaction } from "../controller/adminController.js";
+import { getAllUsers, updateUserRole, getAnalytics, getAllTransactions, blockDevice, unblockUser, revertTransaction, getSuspiciousTransactions, exportSuspiciousTransactions } from "../controller/adminController.js";
 import { verifyToken, isAdmin, isAnalyst } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -13,6 +13,8 @@ router.put("/users/:id/role", isAdmin, updateUserRole);
 // Analytics and Transactions accessible by Admin and Analyst
 router.get("/analytics", isAnalyst, getAnalytics);
 router.get("/transactions", isAnalyst, getAllTransactions);
+router.get("/suspicious-transactions", isAnalyst, getSuspiciousTransactions);
+router.post("/export-suspicious", isAnalyst, exportSuspiciousTransactions);
 router.post("/block-node", isAnalyst, blockDevice);
 router.post("/unblock-user", isAnalyst, unblockUser);
 router.post("/transactions/:id/revert", isAnalyst, revertTransaction);
